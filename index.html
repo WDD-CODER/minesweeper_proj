@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" href="img/favicon.webp" >
     <title>Document</title>
 </head>
-<body>
-    
-    <table>
-
-    </table>
+<body onload="onInit()">
+    <h1>Minesweeper game</h1>
+    <div class="info-container">
+        <div class="score">0</div> 
+        <div class="smaily">😊</div>
+        <div class="timer">xx:xx:xx</div>
+    </div>
+ <div class="board-container"></div>
+ <div onclick="onInit()" class="end-Game"></div>
 </body>
 <script src="js/main.js" ></script>
 <script src="js/util.js" ></script>

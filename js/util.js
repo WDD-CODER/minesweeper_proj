@@ -1,11 +1,6 @@
 
 
-// onInit() This is called when page loads
-//  buildBoard()Builds the board Set the mines Call setMinesNegsCount() Return the created board
- 
-// setMinesNegsCount(board) Count mines around each cell and set the cell's minesAroundCount.
 
-// renderBoard(board) Render the board as a <table> to the page
 
 // onCellClicked(elCell, i, j) Called when a cell is clicked
 
@@ -22,34 +17,9 @@
 // algorithm(see description at the Bonuses section below)
 
 
-// Step1 – the seed app:
 
-// •
-// Create a 4x4 gBoard Matrix containing Objects.
 
-// •
-// Set 2 of them to be mines
 
-// •
-// Present the mines using renderBoard() function.
-// Step2 – counting neighbors:
-
-// •
-// Create setMinesNegsCount() and store the numbers
-
-// •
-// Update the renderBoard() function to also display the neighbor count and the mines
-
-// •
-// Add a console.log – to help you with debugging
-// Step3 – click to reveal:
-
-// •
-// When clicking a cell, call the onCellClicked() function.
-
-// •
-// Clicking a safe cell reveals the minesAroundCount of this cell
-// Step4 – randomize mines' location:
 
 // •
 // Add some randomicity for mines location
@@ -67,4 +37,33 @@
 // Continue to Functionality and Features, then to Further Tasks, and if you went that far, 
 // do go ahead and check the Bonus Tasks.
 
+// function getEmptyCord(board) {
+//     // var emptyCordsArray = []
+//     for (let i = 0; i < board.length; i++) {
+//         for (let j = 0; j < board[0].length; j++) {
 
+            
+//         var randomCell = board[i][j]
+//         if (!randomCell.isMine) { emptyCordsArray.push(randomCell) }
+//     }
+// }
+// return emptyCordsArray
+// }
+function getEmptyCords(board) {
+    var emptyCordsArray = []
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+        var randomCell = board[i][j]
+        if (!randomCell.isMine) { emptyCordsArray.push(randomCell) }
+    }
+}
+return emptyCordsArray
+}
+
+function getRandomCord(){
+ var  emptyCordsArray =  getEmptyCords(gBoard)
+}
+
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
