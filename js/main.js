@@ -20,33 +20,7 @@ function onInit() {
     gBoard = buildBoard(gLevel.SIZE)
     renderBoard(gBoard, '.board-container')
     setMinesNegsCount(gBoard)
-    // placeFlag()
-    document.querySelectorAll('.cell').forEach(cell => {
-        cell.addEventListener('contextmenu', function (event) {
-            event.preventDefault(); // Stop the default right-click menu
-            var CurCords = getCordsByClassName(cell.className)
-            var curCell = gBoard[CurCords.i][CurCords.j]
-            curCell.isMarked = !curCell.isMarked
-            if (!gGame.shownCount) { return }
-            if (curCell.isShown || !gGame.isOn) { return }
-            if (curCell.isMarked) {
-                renderCell(CurCords, FLAG_IMG)
-                cell.classList.remove('cell')
-                cell.classList.add('flag')
-                gGame.markedCount++
-
-            } else {
-                if (curCell.isMine) renderCell(CurCords, MINE_IMG)
-                else
-                    renderCell(CurCords, curCell.minesAroundCount)
-                gGame.markedCount--
-                cell.classList.remove('flag')
-                cell.classList.add('cell')
-            }
-            updateScores()
-            isGameOver()
-        });
-    });
+    placeFlag()
     updateScores()
 }
 
