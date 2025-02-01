@@ -10,14 +10,25 @@
 <body onload="onInit()">
     <h1>Minesweeper game</h1>
     <div class="info-container">
-        <div class="score">0</div> 
-        <div class="smaily">😊</div>
+        <!-- <div class="mark-count-container"></div> -->
+        <div class="mark-count counter">
+            <h5>MARK COUNT</h5>
+            <h6>0</h6>
+        </div> 
+        <!-- <div class="score ">0</div>  -->
+        <div class="score-count counter">
+            <h5>SCORE COUNT</h5>
+            <h6>0</h6> 
+        </div>
+
         <div class="timer">xx:xx:xx</div>
     </div>
+    <div class="smaily">😊</div>
+    <div class="lives"></div>
+<div onclick="onInit()" class="game-over"></div>
  <div class="board-container"></div>
- <div onclick="onInit()" class="end-Game"></div>
+ <div class="personal-info"> Dan Weibren AKA DanDan </div>
 </body>
 <script src="js/main.js" ></script>
 <script src="js/util.js" ></script>
-<script src="" ></script>
 </html>

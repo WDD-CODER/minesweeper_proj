@@ -8,29 +8,53 @@ body {
     border: 2px black solid;
     padding: 10px;
     position: relative;
-    display:inline-block;
+    display: inline-block;
     background-color: rgb(179, 179, 179);
     text-align: center;
-    margin: 10%;
+    margin: 2%;
 }
-
-.timer {
-    border: 2px black solid;
+.lives {
+    font-size: x-large;
+    /* border: 2px black solid; */
     padding: 10px;
     position: relative;
     display: inline-block;
-    background-color: rgb(179, 179, 179);
-    text-align: right;
-    margin: 10%;
+    /* background-color: rgb(179, 179, 179); */
+    text-align: center;
+    margin: 2%;
 }
 
-.score {
+.timer {
+    height: max-content;
+    width:max-content;
     border: 2px black solid;
     padding: 10px;
     display: inline-block;
     background-color: rgb(179, 179, 179);
     text-align: center;
-    margin: 10%;
+    margin: 2%;
+}
+
+.counter{
+    height: min-content;
+    width:min-content;
+    border: 2px black solid;
+    padding: 10px;
+    display: inline-block;
+    background-color: rgb(179, 179, 179);
+    text-align: center;
+    margin: 2%;
+}
+.counter h5{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: small;
+    margin-top: 0;
+}
+.counter h6{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: large;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .board-container {
@@ -38,7 +62,7 @@ body {
     display: inline-block;
     background-color: antiquewhite;
     width: auto;
-    height: 100vh auto;
+    height: auto;
     border: 10px solid black;
 }
 
@@ -53,9 +77,11 @@ body {
     font-size: auto;
 
 }
+
 .cell::before {
     z-index: 1;
-    content: ""; /* Pseudo-element creates the "cover" */
+    content: "";
+    /* Pseudo-element creates the "cover" */
     position: absolute;
     top: 0;
     left: 0;
@@ -64,14 +90,15 @@ body {
     background: linear-gradient(to top, #bfbfbf, gray);
     border-spacing: 2px;
     border: 1px solid #808080;
-    transition: opacity 0.3s; /* Smooth fade effect */
-  }
+    transition: opacity 0.3s;
+    /* Smooth fade effect */
+}
 
-  .cell.hide-before::before {
+.cell.hide-before::before {
     opacity: 0;
     pointer-events: none;
-  }
-  
+}
+
 .cell:hover {
     box-shadow: inset;
     width: 50px;
@@ -82,11 +109,60 @@ body {
 
 img {
     /* visibility: hidden; */
-
+    /* z-index: 1; */
     position: relative;
     width: auto;
     height: auto;
     max-width: 80%;
     text-align: center;
     margin-top: 5px;
+}
+
+.flag {
+    /* visibility: hidden; */
+    size-adjust: auto;
+    position: relative;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    font-size: auto;
+    background: linear-gradient(to top, #bfbfbf, gray);
+    border-spacing: 2px;
+    border: 1px solid #808080;
+    z-index: 2;
+}
+
+.game-over {
+    visibility: hidden;
+    text-align: center;
+    display: block;
+    /* position: absolute; */
+    background: linear-gradient(to top, #bfbfbf, gray);
+    height: auto;
+    width: fit-content;
+    margin: auto;
+    padding: 5px;
+    border: #272727 solid 5px;
+    border-radius: 30%;
+
+}
+.game-over:hover{
+    cursor: pointer;
+}
+.end-Game:active{
+    transform:scale(1.2);
+        background: linear-gradient(to top, #dfdddd, rgb(177, 176, 176));
+
+}
+
+.personal-info{
+text-align: center;
+margin: auto;
+margin-top: 300px;
+width: fit-content;
+height: fit-content;
+border: 5px solid black;
+border-radius: 20px;
+padding: 10px;
+background: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132) );
 }
