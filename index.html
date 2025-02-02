@@ -1,34 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="icon" href="img/favicon.webp" >
+    <link rel="icon" href="img/favicon.webp">
     <title>Document</title>
 </head>
+
 <body onload="onInit()">
+    
     <h1>Minesweeper game</h1>
+
     <div class="info-container">
-        <!-- <div class="mark-count-container"></div> -->
         <div class="mark-count counter">
             <h5>MARK COUNT</h5>
             <h6>0</h6>
-        </div> 
-        <!-- <div class="score ">0</div>  -->
+        </div>
+
         <div class="score-count counter">
             <h5>SCORE COUNT</h5>
-            <h6>0</h6> 
+            <h6>0</h6>
         </div>
 
         <div class="timer">xx:xx:xx</div>
     </div>
-    <div class="smaily">😊</div>
+
+    <button onclick="onInit()" class="smiley"></button>
     <div class="lives"></div>
-<div onclick="onInit()" class="game-over"></div>
- <div class="board-container"></div>
- <div class="personal-info"> Dan Weibren AKA DanDan </div>
+    <div class="game-over"></div>
+    <div class="board-container"></div>
+    <div class="blocking-div"></div>
+
+    <div class="mine-hit">
+        <h5>Holy moly, you'v hit a mine! <br>
+            good thing you Still have some lives.</h5>
+        <h2>🤯</h2>
+        <h4>Hit me to continue <br>👇</h4>
+    </div>
+
+    <div class="Difficulty">
+        <button class="Difficulty level" onclick="level1()">👶</button>
+        <button class="Difficulty level" onclick="level2()">😎</button>
+        <button class="Difficulty level" onclick="level3()">💀</button>
+    </div>
+
+    <div class="footer"> Dan Weibren AKA DanDan </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/util.js"></script>
 </body>
-<script src="js/main.js" ></script>
-<script src="js/util.js" ></script>
+
 </html>

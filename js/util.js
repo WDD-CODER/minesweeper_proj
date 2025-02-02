@@ -3,26 +3,9 @@
 
 
 
-function EmptyAvailableCellCordsArray(board) {
-    var emptyCordsArray = []
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[0].length; j++) {
-            var CurCell = board[i][j]
-        var CurCellCords ={ i:i, j:j}
-        if (!CurCell.isMine && !CurCell.isShown  ) { emptyCordsArray.push(CurCellCords) }
-    }
-}
-return emptyCordsArray
-}
 
-function getRandomCord(){
- var  emptyCordsArray =  getEmptyObjects(gBoard)
-}
 
-function getRandomIntInclusive(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
+// Create a timer 
 function startTimer() {
     var elTimer = document.querySelector('.timer')
     var startTime = Date.now(); // Capture the start time
@@ -38,11 +21,11 @@ function startTimer() {
     }, 10); 
      // Update every 10 milliseconds 
 }
-
+//Allows receiving a number with two digits to set the timer Outcome view
 function pad(num) {
     return num.toString().padStart(2, '0'); // Ensure 2 digits
 }
-
+//Extract cells coordinations by element class name.
 function getCordsByClassName(elCell) {
     if (!elCell) {return null}
     var curElCell = elCell.split(/(\d+)/);
@@ -50,5 +33,42 @@ function getCordsByClassName(elCell) {
     return CurCords
 }
 
+// Change smile Depending on game situationDepending on game situation.
+function smileyChange() {
+    document.querySelector('.board-container').addEventListener('mousedown', function (event) {
+        document.querySelector('.smiley').innerText = '😮'
+    });
+    document.querySelector('.board-container').addEventListener('mouseup', function (event) {
+        document.querySelector('.smiley').innerText = '😊'
+    });
+}
+// Makes  Hart Emoji by live count.
+function livesCount() {
+    var strHTML = ''
+    for (let i = 0; i < gGame.livesCount; i++) {
+        strHTML += '❤️'
+    }
+    var res = document.querySelector('.lives')
+    res.innerHTML = strHTML
 
+}
 
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+// Functions to choose a difficulty by player.
+function level1(){
+    console.log("🚀 ~ level1 ~ gLevel:", gLevel)
+    gLevel = { SIZE: 4, MINES: 2 }
+    onInit()
+}
+function level2(){
+    gLevel = { SIZE: 8, MINES: 14 }
+    onInit()
+
+}
+function level3(){
+    gLevel = { SIZE: 12, MINES: 32 }
+    onInit()
+
+}
