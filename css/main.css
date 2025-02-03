@@ -15,13 +15,13 @@ body {
     margin: 2%;
 }
 
-.smiley:hover{
+.smiley:hover {
     cursor: pointer;
 }
 
-.smiley:active{
-    transform:scale(1.2);
-        background: linear-gradient(to top, #dfdddd, rgb(177, 176, 176));
+.smiley:active {
+    transform: scale(1.2);
+    background: linear-gradient(to top, #dfdddd, rgb(177, 176, 176));
 }
 
 .lives {
@@ -33,6 +33,7 @@ body {
     text-align: center;
     margin: 2%;
 }
+
 .hints {
     font-size: x-large;
     padding: 10px;
@@ -41,6 +42,7 @@ body {
     text-align: center;
     margin: 2%;
 }
+
 .hints button {
     font-size: x-large;
     /* padding: 10px; */
@@ -54,7 +56,7 @@ body {
 
 .timer {
     height: max-content;
-    width:max-content;
+    width: max-content;
     border: 2px black solid;
     padding: 10px;
     display: inline-block;
@@ -63,9 +65,9 @@ body {
     margin: 2%;
 }
 
-.counter{
+.counter {
     height: min-content;
-    width:min-content;
+    width: min-content;
     border: 2px black solid;
     padding: 10px;
     display: inline-block;
@@ -73,12 +75,14 @@ body {
     text-align: center;
     margin: 2%;
 }
-.counter h5{
+
+.counter h5 {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: small;
     margin-top: 0;
 }
-.counter h6{
+
+.counter h6 {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: large;
     margin-top: 0;
@@ -149,10 +153,14 @@ body {
 }
 
 img {
-    max-width: 100%;  /* Makes sure it never overflows its container */
-    max-height: 100%;  /* Makes sure it never overflows its container */
-    height: auto;     /* Keeps aspect ratio */
-    display: inline-block;   /* Removes extra space under the image */
+    max-width: 100%;
+    /* Makes sure it never overflows its container */
+    max-height: 100%;
+    /* Makes sure it never overflows its container */
+    height: auto;
+    /* Keeps aspect ratio */
+    display: inline-block;
+    /* Removes extra space under the image */
 }
 
 /* img {
@@ -176,6 +184,7 @@ img {
     border: 1px solid #808080;
     z-index: 3;
 }
+
 .mine {
     size-adjust: auto;
     position: relative;
@@ -191,7 +200,7 @@ img {
 
 .notice {
     display: none;
-    position: fixed; 
+    position: fixed;
     top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -203,9 +212,9 @@ img {
     z-index: 9999;
 }
 
-.blocking-div{
+.blocking-div {
     display: none;
-    position: fixed; 
+    position: fixed;
     height: 100%;
     width: 100%;
     top: 50%;
@@ -225,12 +234,13 @@ img {
     position: relative;
     display: block;
     border-radius: 10%;
-    background-color: transparent;    text-align: center;
+    background-color: transparent;
+    text-align: center;
     margin: 2%;
 }
 
 
-.level{
+.level {
     display: inline;
     cursor: pointer;
 }
@@ -247,14 +257,14 @@ button:active {
     margin: 2%;
 }
 
-.footer{
-text-align: center;
-margin: auto;
-margin-top: 100px;
-width: fit-content;
-height: fit-content;
-border: 5px solid black;
-border-radius: 20px;
-padding: 10px;
-background: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132) );
+.footer {
+    text-align: center;
+    margin: auto;
+    margin-top: 100px;
+    width: fit-content;
+    height: fit-content;
+    border: 5px solid black;
+    border-radius: 20px;
+    padding: 10px;
+    background: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132));
 }

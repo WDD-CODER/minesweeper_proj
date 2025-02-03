@@ -11,7 +11,7 @@ var gBoard
 var gLevel = { SIZE: 4, MINES: 2 }
 var gGame
 var gCurElapsedTime
-var gBestScores = Infinity
+// var gBestScores = Infinity
 
 
 function onInit() {
@@ -109,13 +109,11 @@ function minesAroundCount(cellI, cellJ, mat) {
 function placeFlag() {
     document.querySelectorAll('.cell').forEach(cell => {
         cell.addEventListener('contextmenu', function (event) {
-            console.log("🚀 ~ cell:", cell)
             event.preventDefault(); // Stop the default right-click menu
             var CurCords = getCordsByClassName(cell.className)
             var curCell = gBoard[CurCords.i][CurCords.j]
             if (!gGame.shownCount || curCell.isShown || !gGame.isOn) return
             curCell.isMarked = !curCell.isMarked // Toggle is marked.
-            console.log("🚀 ~ gCurTime:", gCurElapsedTime)
             if (curCell.isMarked) {
                 renderCell(CurCords, FLAG_IMG)
                 cell.classList.remove('cell')
@@ -329,7 +327,7 @@ function hitMine(elCell, curCell) {
             mineNotice.style.display = "none"
             blockingDiv.style.display = "none";
             elCell.classList.remove('hide-before')
-           
+
 
         }
     })
@@ -376,7 +374,6 @@ function hintUncover(cellI, cellJ) {
             if (j < 0 || j >= gBoard[i].length) continue;
             if (gBoard[i][j].isShown) continue
             document.querySelector(`.cell-${i}-${j}`).classList.add('hide-before')
-            // console.log("🚀 ~ hintUncover ~ document.querySelector(`.cell-${i}-${j}`).classList.contains('flag'):", document.querySelector(`.cell-${i}-${j}`).classList.contains('flag'))
             if (document.querySelector(`.cell-${i}-${j}`).classList.contains('flag')) {
                 var curCords = { i: i, j: j }
                 var curCell = gBoard[i][j]

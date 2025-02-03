@@ -18,7 +18,7 @@ function startTimer() {
         elTimer.innerText = `${pad(minutes)}:${pad(seconds)}`;
         const lastTime = `${pad(minutes)}:${pad(seconds)}`;
         gCurElapsedTime = elapsed
-        return  lastTime
+        return lastTime
     }, 10);
     // Update every 10 milliseconds 
 }
@@ -43,7 +43,7 @@ function smileyChange() {
         if (event.button === 0) elSmiley.innerText = '😮'
         if (event.button === 2) elSmiley.innerText = '🧐'
     });
-    elBoardContainer.addEventListener('mouseup', function (event) {elSmiley.innerText = '😊' });
+    elBoardContainer.addEventListener('mouseup', function (event) { elSmiley.innerText = '😊' });
 }
 
 // Makes Hart Emoji to represent live count.
@@ -55,7 +55,7 @@ function livesCount() {
     document.querySelector('.lives').innerHTML = strHTML
 
 }
-function renderHints() { 
+function renderHints() {
     var strHTML = ''
     for (let i = 0; i < gGame.hintsCount; i++) {
         strHTML += `<button onclick="useHint(this)">💡</button>`
