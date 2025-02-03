@@ -24,21 +24,27 @@
             <h6>0</h6>
         </div>
 
-        <div class="timer">xx:xx:xx</div>
+        <div class="timer">00:00</div>
     </div>
 
     <button onclick="onInit()" class="smiley"></button>
     <div class="lives"></div>
+    <div class="hints">
+        <!-- <button onclick="useHint(this)">💡</button>
+        <button onclick="useHint(this)">💡</button>
+        <button onclick="useHint(this)">💡</button> -->
+    </div>
     <div class="game-over"></div>
     <div class="board-container"></div>
-    <div class="blocking-div"></div>
 
-    <div class="mine-hit">
-        <h5>Holy moly, you'v hit a mine! <br>
-            good thing you Still have some lives.</h5>
-        <h2>🤯</h2>
-        <h4>Hit me to continue <br>👇</h4>
-    </div>
+    <div class="blocking-div">
+
+        <div class="notice">
+            <h5></h5>
+                <h2></h2>
+                <h4></h4>
+            </div>
+        </div>
 
     <div class="Difficulty">
         <button class="Difficulty level" onclick="level1()">👶</button>

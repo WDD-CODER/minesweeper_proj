@@ -1,6 +1,7 @@
 'use strict'
 
 // global consts
+
 const FLAG_IMG = `<img src="img/flag.jpg" alt="mine_img">`
 const MINE_IMG = `<img src="img/mine.jpg" alt="mine_img">`
 const EMPTY = ''
@@ -9,23 +10,24 @@ var timerInterval
 var gBoard
 var gLevel = { SIZE: 4, MINES: 2 }
 var gGame
+var gCurElapsedTime
+var gBestScores = Infinity
 
 
 function onInit() {
-    // restore start info
-    gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0, livesCount: 3 }
     clearInterval(timerInterval)
+
+    gCurElapsedTime = 0
+    gGame = { isOn: false, shownCount: 0, markedCount: 0, timePassed: 0, livesCount: 3, hintsCount: 3, hintActive: false }
     document.querySelector('.smiley').innerText = '😊'
     document.querySelector('.game-over').style.visibility = 'hidden'
     //starter
-    startTimer()
-    gGame.isOn = true
     gBoard = buildBoard(gLevel.SIZE)
     renderBoard(gBoard, '.board-container')
-    setMinesNeighborCount(gBoard)
     placeFlag()
-    smileyChange()
     updateScores()
+    renderHints()
+
 }
 
 //  Builds the board Set the mines Call setMinesNegsCount() Return the created board
@@ -107,30 +109,38 @@ function minesAroundCount(cellI, cellJ, mat) {
 function placeFlag() {
     document.querySelectorAll('.cell').forEach(cell => {
         cell.addEventListener('contextmenu', function (event) {
+            console.log("🚀 ~ cell:", cell)
             event.preventDefault(); // Stop the default right-click menu
             var CurCords = getCordsByClassName(cell.className)
             var curCell = gBoard[CurCords.i][CurCords.j]
+            if (!gGame.shownCount || curCell.isShown || !gGame.isOn) return
             curCell.isMarked = !curCell.isMarked // Toggle is marked.
-            if (!gGame.shownCount || curCell.isShown || !gGame.isOn) { return }
+            console.log("🚀 ~ gCurTime:", gCurElapsedTime)
             if (curCell.isMarked) {
                 renderCell(CurCords, FLAG_IMG)
                 cell.classList.remove('cell')
                 cell.classList.add('flag')
                 gGame.markedCount++
-
             } else {
-                if (curCell.isMine) renderCell(CurCords, MINE_IMG)
-                else {
-                    renderCell(CurCords, curCell.minesAroundCount)
+                cell.classList.remove('flag')
+                cell.classList.add('cell')
+                gGame.markedCount--
+
+
+                if (curCell.isMine) {
+                    renderCell(CurCords, MINE_IMG)
                     gGame.markedCount--
-                    cell.classList.remove('flag')
-                    cell.classList.add('cell')
+                    cell.classList.add('mine')
+
+                } else {
+                    renderCell(CurCords, curCell.minesAroundCount)
                 }
             }
             updateScores()
             isGameOver()
-        });
+        })
     });
+
 }
 
 
@@ -153,13 +163,21 @@ function updateScores() {
     document.querySelector('.mark-count h6').innerText = gGame.markedCount
     document.querySelector('.score-count h6').innerText = gGame.shownCount
     livesCount()
-
 }
 
 // Manage clicks on cells.
 function onCellClicked(elCell, i, j) {
     var curCell = gBoard[i][j]
-    if (curCell.isMarked || curCell.isShown || !gGame.isOn) { return }
+    if (gGame.hintActive) {
+        hintUncover(i, j)
+        return
+    }
+    if (gGame.shownCount === 0) {
+        smileyChange(curCell)
+        startTimer()
+        gGame.isOn = true
+    }
+    if (curCell.isMarked || curCell.isShown) { return }
     elCell.classList.add('hide-before')
     curCell.isShown = true
     if (curCell.isMine) {
@@ -196,7 +214,7 @@ function setMinesNeighborCount(gBoard) {
 
 }
 // Expand neighboring cells that are Not mine's, marked or shown 
-function expandShown(gBoard, i, j) {
+function expandShown(gBoard, elCell, i, j) {
     // In the pdf, it stated  expandShown(Board, elCell,i, j). 
     // I didn't use the elCell As the parameter. didn't found usage for it.
     var curEmptyNeighbors = NeighborEmptyCords(i, j, gBoard)
@@ -236,11 +254,11 @@ function EmptyAvailableCellCordsArray(board) {
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
             var CurCell = board[i][j]
-        var CurCellCords ={ i:i, j:j}
-        if (!CurCell.isMine && !CurCell.isShown  ) { emptyCordsArray.push(CurCellCords) }
+            var CurCellCords = { i: i, j: j }
+            if (!CurCell.isMine && !CurCell.isShown) { emptyCordsArray.push(CurCellCords) }
+        }
     }
-}
-return emptyCordsArray
+    return emptyCordsArray
 }
 
 //implements losing situation
@@ -284,41 +302,108 @@ function isGameOver() {
 }
 // Deals with all the situation after hitting a mine
 function hitMine(elCell, curCell) {
-    console.log("🚀 ~ hitMine ~ gGame.livesCount:", gGame.livesCount)
+    clearInterval(timerInterval)
     var blockingDiv = document.querySelector('.blocking-div')
-    var mineNotice = document.querySelector('.mine-hit')
+    var mineNotice = document.querySelector('.notice')
     mineNotice.style.display = "block"
     blockingDiv.style.display = "block"
-    // Change hit Mine  notice when game over. 
+    // Change hit Mine  notice 
     if (gGame.livesCount < 1) {
         console.log('variable');
-        document.querySelector('.mine-hit h5').innerText = 'Too bad that was your last life ! \n Press me to continue \n 👇'
-        document.querySelector('.mine-hit h4').innerText = 'Hit the Skull emoji to restart the game!'
+        document.querySelector('.notice h5').innerText = 'Too bad that was your last life ! \n Press me to continue \n 👇'
+        document.querySelector('.notice h2').innerText = '😭'
+        document.querySelector('.notice h4').innerText = 'Hit the Skull emoji to restart the game!'
+    } else {
+        document.querySelector('.notice h5').innerText = 'Holy moly, you\'v hit a mine! \n good thing you Still have some lives.'
+        document.querySelector('.notice h2').innerText = '🤯'
+        document.querySelector('.notice h4').innerText = 'Hit me to continue  \n 👇'
     }
-// Allowing to remove the hit mine notice by clicking anywhere on the screen.
-    mineNotice.addEventListener("click", function(event) {
+    // Allowing to remove the hit mine notice by clicking anywhere on the screen.
+    mineNotice.addEventListener("click", function (event) {
         if (!gGame.isOn) {
-             mineNotice.style.display = "none";
-             blockingDiv.style.display = "none";
-              return
+            mineNotice.style.display = "none";
+            blockingDiv.style.display = "none";
+            return
         } else {
-           curCell.isShown = false
-           mineNotice.style.display = "none"
-           blockingDiv.style.display = "none";
-           elCell.classList.remove('hide-before')
-        } 
-        })
+            curCell.isShown = false
+            mineNotice.style.display = "none"
+            blockingDiv.style.display = "none";
+            elCell.classList.remove('hide-before')
+           
 
-        blockingDiv.addEventListener("click", function(event) {
+        }
+    })
+    blockingDiv.addEventListener("click", function (event) {
         if (!gGame.isOn) {
-             mineNotice.style.display = "none";
-             blockingDiv.style.display = "none";
-              return
+            mineNotice.style.display = "none";
+            blockingDiv.style.display = "none";
+            return
         } else {
-           curCell.isShown = false
-           mineNotice.style.display = "none"
-           blockingDiv.style.display = "none";
-           elCell.classList.remove('hide-before')
-        } 
-        })
+            curCell.isShown = false
+            mineNotice.style.display = "none"
+            blockingDiv.style.display = "none";
+            elCell.classList.remove('hide-before')
+            startTimer()
+        }
+    })
+}
+
+
+function useHint(elHint) {
+    if (gGame.shownCount === 0) {
+        var elNotice = document.querySelector('.notice')
+        var blockingDiv = document.querySelector('.blocking-div')
+        elNotice.style.display = 'block'
+        blockingDiv.style.display = 'block'
+        document.querySelector('.notice h2').innerText = '🤣'
+        document.querySelector('.notice h5').innerText = 'You forgot to unveil a cell \n You have to unveil one cell before using a hint!'
+        document.querySelector('.notice h4').innerText = 'Click anywhere to continue!'
+        elNotice.addEventListener("click", function (event) { elNotice.style.display = 'none'; return })
+        blockingDiv.addEventListener("click", function (event) { blockingDiv.style.display = 'none'; return })
+    } else {
+        elHint.style.backgroundColor = ' rgb(212, 212, 54)'
+        gGame.hintActive = true
+        gGame.isOn = false
+    }
+
+}
+
+function hintUncover(cellI, cellJ) {
+    clearInterval(timerInterval)
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (j < 0 || j >= gBoard[i].length) continue;
+            if (gBoard[i][j].isShown) continue
+            document.querySelector(`.cell-${i}-${j}`).classList.add('hide-before')
+            // console.log("🚀 ~ hintUncover ~ document.querySelector(`.cell-${i}-${j}`).classList.contains('flag'):", document.querySelector(`.cell-${i}-${j}`).classList.contains('flag'))
+            if (document.querySelector(`.cell-${i}-${j}`).classList.contains('flag')) {
+                var curCords = { i: i, j: j }
+                var curCell = gBoard[i][j]
+                renderCell(curCords, curCell.minesAroundCount)
+                setTimeout(((row, coll) => {
+                    return () => {
+                        document.querySelector(`.cell-${row}-${coll}`).classList.remove('hide-before')
+                        renderCell(curCords, FLAG_IMG)
+                    }
+                })(i, j), 1500);
+            }
+            else {
+                setTimeout(((row, coll) => {
+                    return () => {
+                        document.querySelector(`.cell-${row}-${coll}`).classList.remove('hide-before')
+                    }
+                })(i, j), 1500);
+            }
+        }
+    }
+
+    setTimeout(() => {
+        startTimer()
+        gGame.hintsCount--
+        renderHints()
+        gGame.isOn = true
+        gGame.hintActive = false
+    }, 1500);
+
 }

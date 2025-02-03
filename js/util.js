@@ -8,7 +8,7 @@
 // Create a timer 
 function startTimer() {
     var elTimer = document.querySelector('.timer')
-    var startTime = Date.now(); // Capture the start time
+    var startTime = Date.now() - gCurElapsedTime; // Capture the start time And save it globally so I can restart the timer from the same point every time.
     timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime; // Calculate elapsed time in ms
         const milliseconds = Math.floor(elapsed % 1000 / 10); // Get milliseconds (0-99 for cleaner display)
@@ -17,17 +17,19 @@ function startTimer() {
         // Format and display the counter
         elTimer.innerText = `${pad(minutes)}:${pad(seconds)}`;
         const lastTime = `${pad(minutes)}:${pad(seconds)}`;
-        return lastTime
-    }, 10); 
-     // Update every 10 milliseconds 
+        gCurElapsedTime = elapsed
+        return  lastTime
+    }, 10);
+    // Update every 10 milliseconds 
 }
+
 //Allows receiving a number with two digits to set the timer Outcome view
 function pad(num) {
     return num.toString().padStart(2, '0'); // Ensure 2 digits
 }
 //Extract cells coordinations by element class name.
 function getCordsByClassName(elCell) {
-    if (!elCell) {return null}
+    if (!elCell) { return null }
     var curElCell = elCell.split(/(\d+)/);
     var CurCords = { i: curElCell[1], j: curElCell[3] }
     return CurCords
@@ -35,39 +37,46 @@ function getCordsByClassName(elCell) {
 
 // Change smile Depending on game situationDepending on game situation.
 function smileyChange() {
-    document.querySelector('.board-container').addEventListener('mousedown', function (event) {
-        document.querySelector('.smiley').innerText = '😮'
+    var elBoardContainer = document.querySelector('.board-container')
+    var elSmiley = document.querySelector('.smiley')
+    elBoardContainer.addEventListener('mousedown', function (event) {
+        if (event.button === 0) elSmiley.innerText = '😮'
+        if (event.button === 2) elSmiley.innerText = '🧐'
     });
-    document.querySelector('.board-container').addEventListener('mouseup', function (event) {
-        document.querySelector('.smiley').innerText = '😊'
-    });
+    elBoardContainer.addEventListener('mouseup', function (event) {elSmiley.innerText = '😊' });
 }
-// Makes  Hart Emoji by live count.
+
+// Makes Hart Emoji to represent live count.
 function livesCount() {
     var strHTML = ''
     for (let i = 0; i < gGame.livesCount; i++) {
         strHTML += '❤️'
     }
-    var res = document.querySelector('.lives')
-    res.innerHTML = strHTML
+    document.querySelector('.lives').innerHTML = strHTML
 
+}
+function renderHints() { 
+    var strHTML = ''
+    for (let i = 0; i < gGame.hintsCount; i++) {
+        strHTML += `<button onclick="useHint(this)">💡</button>`
+    }
+    document.querySelector('.hints').innerHTML = strHTML
 }
 
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 // Functions to choose a difficulty by player.
-function level1(){
-    console.log("🚀 ~ level1 ~ gLevel:", gLevel)
+function level1() {
     gLevel = { SIZE: 4, MINES: 2 }
     onInit()
 }
-function level2(){
+function level2() {
     gLevel = { SIZE: 8, MINES: 14 }
     onInit()
 
 }
-function level3(){
+function level3() {
     gLevel = { SIZE: 12, MINES: 32 }
     onInit()
 

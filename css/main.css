@@ -26,7 +26,6 @@ body {
 
 .lives {
     font-size: x-large;
-    /* border: 2px black solid; */
     padding: 10px;
     position: relative;
     display: inline-block;
@@ -34,6 +33,24 @@ body {
     text-align: center;
     margin: 2%;
 }
+.hints {
+    font-size: x-large;
+    padding: 10px;
+    position: relative;
+    display: inline;
+    text-align: center;
+    margin: 2%;
+}
+.hints button {
+    font-size: x-large;
+    /* padding: 10px; */
+    position: relative;
+    display: inline;
+    background-color: grey;
+    text-align: center;
+    margin: 2%;
+}
+
 
 .timer {
     height: max-content;
@@ -132,15 +149,34 @@ body {
 }
 
 img {
+    max-width: 100%;  /* Makes sure it never overflows its container */
+    max-height: 100%;  /* Makes sure it never overflows its container */
+    height: auto;     /* Keeps aspect ratio */
+    display: inline-block;   /* Removes extra space under the image */
+}
+
+/* img {
     position: relative;
-    width: auto;
-    height: auto;
+    width: fit-content;
+    height: fit-content;
     max-width: 80%;
     text-align: center;
     margin-top: 5px;
-}
+} */
 
 .flag {
+    size-adjust: auto;
+    position: relative;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    font-size: auto;
+    background: linear-gradient(to top, #bfbfbf, gray);
+    border-spacing: 2px;
+    border: 1px solid #808080;
+    z-index: 3;
+}
+.mine {
     size-adjust: auto;
     position: relative;
     text-align: center;
@@ -153,10 +189,10 @@ img {
     z-index: 2;
 }
 
-.mine-hit {
+.notice {
     display: none;
     position: fixed; 
-    top: 20%;
+    top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.8);
@@ -193,10 +229,12 @@ img {
     margin: 2%;
 }
 
+
 .level{
     display: inline;
-
+    cursor: pointer;
 }
+
 
 button:active {
     font-size: x-large;
