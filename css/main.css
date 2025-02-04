@@ -29,12 +29,11 @@ body {
     padding: 10px;
     position: relative;
     display: inline-block;
-    background-color: op;
     text-align: center;
     margin: 2%;
 }
 
-.hints {
+.hint {
     font-size: x-large;
     padding: 10px;
     position: relative;
@@ -43,26 +42,64 @@ body {
     margin: 2%;
 }
 
-.hints button {
+.hint button {
     font-size: x-large;
-    /* padding: 10px; */
+    padding: auto;
     position: relative;
     display: inline;
-    background-color: grey;
+    background-color: transparent;
     text-align: center;
     margin: 2%;
 }
 
+.active {
+    background-color: rgb(212, 212, 54) !important;
+}
+
+.info-container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100%;
+    /* Optional: adjust as needed */
+    gap: 2%;
+}
 
 .timer {
-    height: max-content;
-    width: max-content;
-    border: 2px black solid;
-    padding: 10px;
+    font-size: x-large;
+    height: min-content;
+    width: min-content;
+    /* border: 2px black solid; */
+    margin: auto;
+    padding: 15px;
     display: inline-block;
     background-color: rgb(179, 179, 179);
     text-align: center;
-    margin: 2%;
+}
+
+.best-score {
+    gap: 0%;
+    /* visibility: none; */
+    height: min-content;
+    width: 110px;
+    border: 2px black solid;
+    /* padding: 10px; */
+    display: inline-block;
+    background-color: rgb(179, 179, 179);
+    text-align: center;
+}
+
+.best-score h4 {
+    display: none;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: small;
+    /* margin-top: 0; */
+}
+.best-score h5 {
+    display: none;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: small;
+    /* margin-top: 0; */
 }
 
 .counter {
@@ -201,7 +238,7 @@ img {
 .notice {
     display: none;
     position: fixed;
-    top: 15%;
+    top: 18%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.8);
@@ -246,14 +283,14 @@ img {
 }
 
 
-button:active {
+.level button:active {
     font-size: x-large;
     padding: 10px;
     position: relative;
     display: inline;
     border-radius: 10%;
     transform: scale(0.95);
-    background-color: rgb(179, 179, 179);
+    background-color: transparent;
     margin: 2%;
 }
 

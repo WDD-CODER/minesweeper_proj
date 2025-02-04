@@ -24,12 +24,17 @@
             <h6>0</h6>
         </div>
 
-        <div class="timer">00:00</div>
+        <div class="best-score">
+            <h4>best score is!</h4>
+            <h5>00:00</h5>
+            <h4>timer</h4>
+            <div class="timer">00:00</div>
+        </div>
     </div>
 
     <button onclick="onInit()" class="smiley"></button>
     <div class="lives"></div>
-    <div class="hints">
+    <div class="hint">
         <!-- <button onclick="useHint(this)">💡</button>
         <button onclick="useHint(this)">💡</button>
         <button onclick="useHint(this)">💡</button> -->
@@ -39,7 +44,7 @@
 
     <div class="blocking-div">
 
-        <div class="notice">
+        <div onclick="hideDives()" class="notice">
             <h5></h5>
                 <h2></h2>
                 <h4></h4>

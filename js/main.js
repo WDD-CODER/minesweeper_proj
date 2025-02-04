@@ -10,15 +10,20 @@ var timerInterval
 var gBoard
 var gLevel = { SIZE: 4, MINES: 2 }
 var gGame
-var gCurElapsedTime
-// var gBestScores = Infinity
+var gCurTimeCount 
+var gActiveHint
+var gBestScore = { last: Infinity, time: null }
 
-
+console.log("🚀 ~ gBestScore:", gBestScore)
+// I'm still having an issue with the timer. It's it keep on starting at the same place.3rd time game ends and I can't understand exactly why.
 function onInit() {
-    clearInterval(timerInterval)
-
-    gCurElapsedTime = 0
-    gGame = { isOn: false, shownCount: 0, markedCount: 0, timePassed: 0, livesCount: 3, hintsCount: 3, hintActive: false }
+    console.log("Before clearInterval, timerInterval:", timerInterval);
+    clearInterval(timerInterval);
+    timerInterval = null
+    console.log("After clearInterval, timerInterval:", timerInterval);
+        gCurTimeCount = { last: 0, time: null } 
+    // console.log("🚀 ~ onInit ~ gCurTimeCount:", gCurTimeCount)
+    gGame = { gameIsStop: false, isOn: false, shownCount: 0, markedCount: 0, timePassed: 0, livesCount: 3, hintsCount: 3, hintActive: false }
     document.querySelector('.smiley').innerText = '😊'
     document.querySelector('.game-over').style.visibility = 'hidden'
     //starter
@@ -157,10 +162,11 @@ function placeRandomMines(gBoard, HowManyMines) {
 
 //Update scoreboard.
 function updateScores() {
-    gGame.secsPassed = document.querySelector('.timer').innerText
+    gGame.timePassed = document.querySelector('.timer').innerText
     document.querySelector('.mark-count h6').innerText = gGame.markedCount
     document.querySelector('.score-count h6').innerText = gGame.shownCount
     livesCount()
+    
 }
 
 // Manage clicks on cells.
@@ -266,37 +272,48 @@ function youLose() {
     for (let i = 0; i < gBoard.length; i++) {
         for (let j = 0; j < gBoard[i].length; j++) {
             if (gBoard[i][j].isMine) {
+                gGame.gameIsStop = true
                 clearInterval(timerInterval)
                 document.querySelector('.smiley').innerText = '☠️'
                 document.querySelector(`.cell-${i}-${j}`).classList.add('hide-before')
                 document.querySelector('.game-over').style.background = 'linear-gradient(to top, #ff6347, #ffea00)';
-
                 gGame.isOn = false
             }
         }
     }
-}
+            //Updates best score
+            if (gCurTimeCount.last < gBestScore.last) gBestScore = { last: gCurTimeCount.last, time:  gCurTimeCount.time }
+            console.log("🚀 ~ victory ~ gBestScore:", gBestScore)
+
+        }
 //implements wining situation
 function victory() {
+    clearInterval(timerInterval)
+    console.log("🚀 ~ victory ~ timerInterval:", timerInterval)
     document.querySelector('.game-over').style.visibility = 'visible'
     document.querySelector('.game-over').innerText = 'GAME OVER \n you win!'
     document.querySelector('.game-over').style.background = 'linear-gradient(to top, #adff2f, #ffea00)';
-    clearInterval(timerInterval)
     gGame.isOn = false
     document.querySelector('.smiley').innerText = '😎'
-
+            //Updates best score
+            if (gCurTimeCount.last < gBestScore.last) {gBestScore = { last: gCurTimeCount.last, time: gCurTimeCount.time }
+    // document.querySelectorAll('.best-score h').forEach(el =>{el.style.display = "block"})
+    document.querySelector('.best-score h5').style.display = "block"
+    document.querySelector('.best-score h5').innerText  = gBestScore.time
+    document.querySelector('.best-score h4').style.display = "block"
+            gGame.gameIsStop = true
 }
+}
+
+
 //Checks if game over and sets victory or loss.
 function isGameOver() {
     var TotalCellCount = gLevel.SIZE * gLevel.SIZE
     var NumOFmines = gLevel.MINES
     var emptyCellsCount = TotalCellCount - NumOFmines
-    for (let i = 0; i < gBoard.length; i++) {
-        for (let j = 0; j < gBoard[i].length; j++) {
             if (gGame.livesCount < 1) youLose()
-            if (gGame.shownCount === emptyCellsCount && gGame.markedCount === NumOFmines) { victory() }
-        }
-    }
+           else if (gGame.shownCount === emptyCellsCount && gGame.markedCount === NumOFmines) { victory() }
+
 }
 // Deals with all the situation after hitting a mine
 function hitMine(elCell, curCell) {
@@ -318,54 +335,62 @@ function hitMine(elCell, curCell) {
     }
     // Allowing to remove the hit mine notice by clicking anywhere on the screen.
     mineNotice.addEventListener("click", function (event) {
-        if (!gGame.isOn) {
-            mineNotice.style.display = "none";
-            blockingDiv.style.display = "none";
-            return
-        } else {
-            curCell.isShown = false
-            mineNotice.style.display = "none"
-            blockingDiv.style.display = "none";
-            elCell.classList.remove('hide-before')
+        blockingDiv.style.display = "none";
+        mineNotice.style.display = "none"
+        if (!gGame.isOn) return
+        curCell.isShown = false
+        elCell.classList.remove('hide-before')
+        })
 
-
-        }
-    })
     blockingDiv.addEventListener("click", function (event) {
-        if (!gGame.isOn) {
-            mineNotice.style.display = "none";
             blockingDiv.style.display = "none";
-            return
-        } else {
-            curCell.isShown = false
             mineNotice.style.display = "none"
-            blockingDiv.style.display = "none";
+            if (!gGame.isOn) return
+            curCell.isShown = false
             elCell.classList.remove('hide-before')
+          if (!gGame.gameIsStop) {
             startTimer()
-        }
+          }  
     })
 }
 
 
+// Implify use hint when player presses button
 function useHint(elHint) {
+    if (gGame.gameIsStop) {
+        return
+    }
+    // Make sure no option to press another hint while one is active
+    if (gGame.hintActive && elHint !== gActiveHint) return
+
+    var elNotice = document.querySelector('.notice')
+    var blockingDiv = document.querySelector('.blocking-div')
+    //If player didn't show one cell, don't Implement hint. 
     if (gGame.shownCount === 0) {
-        var elNotice = document.querySelector('.notice')
-        var blockingDiv = document.querySelector('.blocking-div')
         elNotice.style.display = 'block'
         blockingDiv.style.display = 'block'
         document.querySelector('.notice h2').innerText = '🤣'
         document.querySelector('.notice h5').innerText = 'You forgot to unveil a cell \n You have to unveil one cell before using a hint!'
         document.querySelector('.notice h4').innerText = 'Click anywhere to continue!'
-        elNotice.addEventListener("click", function (event) { elNotice.style.display = 'none'; return })
-        blockingDiv.addEventListener("click", function (event) { blockingDiv.style.display = 'none'; return })
-    } else {
-        elHint.style.backgroundColor = ' rgb(212, 212, 54)'
-        gGame.hintActive = true
-        gGame.isOn = false
+        elNotice.addEventListener("click", function (event) { elNotice.style.display = 'none' })
+        blockingDiv.addEventListener("click", function (event) { blockingDiv.style.display = 'none' })
+        return
     }
 
-}
+    else if (gGame.hintActive) {
+        elHint.style.backgroundColor = 'transparent'
+        gGame.hintActive = false
+        gGame.isOn = true
 
+    } else {
+        elHint.style.backgroundColor = 'rgb(212, 212, 54)'
+        gGame.hintActive = true
+        gActiveHint = elHint
+        // gGame.isOn = false
+
+    }
+}
+// Uncover relevant neighbor cells.
 function hintUncover(cellI, cellJ) {
     clearInterval(timerInterval)
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -382,6 +407,7 @@ function hintUncover(cellI, cellJ) {
                     return () => {
                         document.querySelector(`.cell-${row}-${coll}`).classList.remove('hide-before')
                         renderCell(curCords, FLAG_IMG)
+
                     }
                 })(i, j), 1500);
             }
@@ -394,13 +420,15 @@ function hintUncover(cellI, cellJ) {
             }
         }
     }
+    
+    gGame.hintActive = false
+    gGame.isOn = true
+    gGame.hintsCount--
 
     setTimeout(() => {
         startTimer()
-        gGame.hintsCount--
         renderHints()
-        gGame.isOn = true
-        gGame.hintActive = false
+
     }, 1500);
 
 }

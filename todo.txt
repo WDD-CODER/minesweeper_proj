@@ -1,0 +1,26 @@
+
+Keep the best score in local storage (per level) and show it on the page
+
+When a cell that has no mines in his neighbors is clicked – uncover the cell and also 
+expand to all his neighbors in a recursive way.
+
+The user has 3 Safe-Clicks:
+Clicking the Safe-Click button will mark a random covered safe cell (for 1.5 seconds) 
+so the user knows that he can safely click that cell.
+
+The user should be able to toggle between Dark-Mode and Light-Mode
+
+Add an “UNDO” button, so the user can undo (some of) his moves
+
+Manually positioned mines
+Create a “manually create” mode in which the user first positions
+the mines (by clicking cells) and then plays. 
+
+MEGA HINT
+Mega-Hint works only once every game. It is used to uncover an area of the board for
+2 seconds. Functionality description: (1) Click the “Mega Hint” button (2)
+then click the area’s top-left cell (3) then click bottom-right cell.
+The whole area will be uncovered for 2 seconds.
+
+Clicking the “Exterminator” button, eliminate 3 of the existing mines, randomly.
+ These mines will disappear from the board. Re-calculation of neighbors-count is needed

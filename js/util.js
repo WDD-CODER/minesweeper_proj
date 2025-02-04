@@ -8,7 +8,9 @@
 // Create a timer 
 function startTimer() {
     var elTimer = document.querySelector('.timer')
-    var startTime = Date.now() - gCurElapsedTime; // Capture the start time And save it globally so I can restart the timer from the same point every time.
+    var startTime = Date.now() - gCurTimeCount.last; // Capture the start time And save it globally so I can restart the timer from the same point every time.
+    console.log("🚀 ~ startTimer ~ gCurTimeCount:", gCurTimeCount)
+    console.log("🚀 ~ startTimer ~ startTime:", startTime)
     timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime; // Calculate elapsed time in ms
         const milliseconds = Math.floor(elapsed % 1000 / 10); // Get milliseconds (0-99 for cleaner display)
@@ -17,7 +19,8 @@ function startTimer() {
         // Format and display the counter
         elTimer.innerText = `${pad(minutes)}:${pad(seconds)}`;
         const lastTime = `${pad(minutes)}:${pad(seconds)}`;
-        gCurElapsedTime = elapsed
+        gCurTimeCount.last = elapsed
+        gCurTimeCount.time = lastTime
         return lastTime
     }, 10);
     // Update every 10 milliseconds 
@@ -35,6 +38,16 @@ function getCordsByClassName(elCell) {
     return CurCords
 }
 
+function hideDives(elCell) {
+    document.querySelector('.blocking-div').style.display = "none";
+    document.querySelector('.notice').style.display = "none";
+if (!gGame.isOn) {return}
+else 
+curCell.isShown = false
+elCell.classList.remove('hide-before')
+}
+
+
 // Change smile Depending on game situationDepending on game situation.
 function smileyChange() {
     var elBoardContainer = document.querySelector('.board-container')
@@ -45,6 +58,7 @@ function smileyChange() {
     });
     elBoardContainer.addEventListener('mouseup', function (event) { elSmiley.innerText = '😊' });
 }
+
 
 // Makes Hart Emoji to represent live count.
 function livesCount() {
@@ -58,9 +72,9 @@ function livesCount() {
 function renderHints() {
     var strHTML = ''
     for (let i = 0; i < gGame.hintsCount; i++) {
-        strHTML += `<button onclick="useHint(this)">💡</button>`
+        strHTML += `<button class="button${i}" onclick="useHint(this)">💡</button>`
     }
-    document.querySelector('.hints').innerHTML = strHTML
+    document.querySelector('.hint').innerHTML = strHTML
 }
 
 function getRandomIntInclusive(min, max) {
