@@ -7,10 +7,8 @@
 
 // Create a timer 
 function startTimer() {
-    var elTimer = document.querySelector('.timer')
+    var elTimer = document.querySelector('.timer h5')
     var startTime = Date.now() - gCurTimeCount.last; // Capture the start time And save it globally so I can restart the timer from the same point every time.
-    console.log("🚀 ~ startTimer ~ gCurTimeCount:", gCurTimeCount)
-    console.log("🚀 ~ startTimer ~ startTime:", startTime)
     timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime; // Calculate elapsed time in ms
         const milliseconds = Math.floor(elapsed % 1000 / 10); // Get milliseconds (0-99 for cleaner display)
@@ -30,6 +28,12 @@ function startTimer() {
 function pad(num) {
     return num.toString().padStart(2, '0'); // Ensure 2 digits
 }
+// Stops and cleared the timer interval
+function stopeTimer() {
+    clearInterval(timerInterval)
+    timerInterval = null
+}
+
 //Extract cells coordinations by element class name.
 function getCordsByClassName(elCell) {
     if (!elCell) { return null }
@@ -38,14 +42,6 @@ function getCordsByClassName(elCell) {
     return CurCords
 }
 
-function hideDives(elCell) {
-    document.querySelector('.blocking-div').style.display = "none";
-    document.querySelector('.notice').style.display = "none";
-if (!gGame.isOn) {return}
-else 
-curCell.isShown = false
-elCell.classList.remove('hide-before')
-}
 
 
 // Change smile Depending on game situationDepending on game situation.
@@ -82,16 +78,61 @@ function getRandomIntInclusive(min, max) {
 }
 // Functions to choose a difficulty by player.
 function level1() {
-    gLevel = { SIZE: 4, MINES: 2 }
+    gLevel = { DIFFICULTY: 'Beginner', SIZE: 4, MINES: 2 }
     onInit()
 }
 function level2() {
-    gLevel = { SIZE: 8, MINES: 14 }
+    gLevel = { DIFFICULTY: 'Expert', SIZE: 8, MINES: 14 }
     onInit()
 
 }
 function level3() {
-    gLevel = { SIZE: 12, MINES: 32 }
+    gLevel = { DIFFICULTY: 'Killer', SIZE: 12, MINES: 32 }
     onInit()
 
+}
+
+//  Count mines around each cell and set the cell's minesAroundCount.
+function minesAroundCount(cellI, cellJ, mat) {
+    var NeighborMinesCount = 0
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= mat.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (i === cellI && j === cellJ) continue
+            if (j < 0 || j >= mat[i].length) continue
+            if (mat[i][j].isMine) NeighborMinesCount++
+        }
+    }
+    return NeighborMinesCount
+}
+
+// Get available Neighboring cells coordinations for later usage
+function NeighborEmptyCords(cellI, cellJ, mat) {
+    var NeighborEmptyCordsArray = []
+    var count = 0
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= mat.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++, count++) {
+            if (i === cellI && j === cellJ) continue
+            if (j < 0 || j >= mat[i].length) continue
+            if (mat[i][j].isMine) continue
+            if (mat[i][j].isShown) continue
+            if (mat[i][j].isMarked) continue
+            else var cell = { row: i, coll: j }
+            NeighborEmptyCordsArray.push(cell)
+        }
+    }
+    return NeighborEmptyCordsArray
+}
+// Find available sales to place mines in them.
+function EmptyAvailableCellCordsArray(board) {
+    var emptyCordsArray = []
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+            var CurCell = board[i][j]
+            var CurCellCords = { i: i, j: j }
+            if (!CurCell.isMine && !CurCell.isShown) { emptyCordsArray.push(CurCellCords) }
+        }
+    }
+    return emptyCordsArray
 }

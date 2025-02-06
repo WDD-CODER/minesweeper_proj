@@ -10,7 +10,7 @@
 </head>
 
 <body onload="onInit()">
-    
+
     <h1>Minesweeper game</h1>
 
     <div class="info-container">
@@ -23,12 +23,15 @@
             <h5>SCORE COUNT</h5>
             <h6>0</h6>
         </div>
-
-        <div class="best-score">
-            <h4>best score is!</h4>
-            <h5>00:00</h5>
-            <h4>timer</h4>
-            <div class="timer">00:00</div>
+        <div class="clock-div">
+            <!-- <div class="best-score">
+                <h4>best score is!</h4>
+                <h5>00:00</h5>
+            </div> -->
+            <div class="timer">
+                <h4>timer</h4>
+                <h5></h5>
+            </div>
         </div>
     </div>
 
@@ -42,23 +45,37 @@
     <div class="game-over"></div>
     <div class="board-container"></div>
 
-    <div class="blocking-div">
-
-        <div onclick="hideDives()" class="notice">
+    <div onclick="hideNoticeDivs(this)" class="blocking-div">
+        <div  class="notice">
             <h5></h5>
-                <h2></h2>
-                <h4></h4>
-            </div>
+            <h2></h2>
+            <h4></h4>
         </div>
+    </div>
 
     <div class="Difficulty">
         <button class="Difficulty level" onclick="level1()">👶</button>
         <button class="Difficulty level" onclick="level2()">😎</button>
         <button class="Difficulty level" onclick="level3()">💀</button>
     </div>
+    <h2>Best Scores</h2>
+    <div class="best-scores">
+        <div class="score-container Beginner">
+            <h2>Beginner</h2>
+            <p></p>
+        </div>
+        <div class="score-container Expert">
+            <h2>Expert</h2>
+            <p></p>
+        </div>
+        <div class="score-container Killer">
+            <h2>Killer</h2>
+            <p></p>
+        </div>
+    </div>
 
     <div class="footer"> Dan Weibren AKA DanDan </div>
-    
+
     <script src="js/main.js"></script>
     <script src="js/util.js"></script>
 </body>
