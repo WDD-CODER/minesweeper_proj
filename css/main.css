@@ -61,7 +61,6 @@ body {
     justify-content: center;
     display: flex;
     height: 100%;
-    /* Optional: adjust as needed */
     gap: 2%;
 }
 
@@ -98,23 +97,6 @@ body {
     padding: 5px;
     margin: 2px;
 }
-
-
-
-
-/* .best-score h4{
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: large;
-    margin: 0;
-}
-.best-score h5{
-    border: 2px solid black;
-    border-radius: 8px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: large;
-    padding: 5px;
-    margin: 2px;
-}  */
 
 .counter {
     height: min-content;
@@ -211,8 +193,6 @@ img {
     display: block;
 }
 
-
-
 .symbol {
 
     size-adjust: auto;
@@ -227,19 +207,6 @@ img {
     border: 1px solid #808080;
     z-index: 3;
 }
-
-/* .mine {
-    size-adjust: auto;
-    position: relative;
-    text-align: center;
-    width: 50px;
-    height: 50px;
-    font-size: auto;
-    background: linear-gradient(to top, #bfbfbf, gray);
-    border-spacing: 2px;
-    border: 1px solid #808080;
-    z-index: 2;
-} */
 
 .notice {
     display: none;
@@ -288,7 +255,6 @@ img {
     cursor: pointer;
 }
 
-
 .level button:active {
     font-size: x-large;
     padding: 10px;
@@ -314,11 +280,8 @@ img {
 
 .best-scores {
     display: flex;
-    /* Keeps all score containers in a row */
     justify-content: center;
-    /* Centers them */
     gap: 10px;
-    /* Adds space between boxes */
 }
 
 .score-container {
