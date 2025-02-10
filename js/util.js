@@ -29,7 +29,7 @@ function pad(num) {
     return num.toString().padStart(2, '0'); // Ensure 2 digits
 }
 // Stops and cleared the timer interval
-function stopeTimer() {
+function stopTimer() {
     clearInterval(timerInterval)
     timerInterval = null
 }
@@ -42,20 +42,17 @@ function getCordsByClassName(elCell) {
     return CurCords
 }
 
-
-
 // Change smile Depending on game situationDepending on game situation.
 function smileyChange() {
     var elBoardContainer = document.querySelector('.board-container')
     var elSmiley = document.querySelector('.smiley')
     elBoardContainer.addEventListener('mousedown', function (event) {
+        if (!gGame.isOn) return
         if (event.button === 0) elSmiley.innerText = '😮'
         if (event.button === 2) elSmiley.innerText = '🧐'
     });
     elBoardContainer.addEventListener('mouseup', function (event) { elSmiley.innerText = '😊' });
 }
-
-
 // Makes Hart Emoji to represent live count.
 function livesCount() {
     var strHTML = ''
@@ -63,8 +60,9 @@ function livesCount() {
         strHTML += '❤️'
     }
     document.querySelector('.lives').innerHTML = strHTML
-
 }
+
+// Makes hints Emoji to represent hint count.
 function renderHints() {
     var strHTML = ''
     for (let i = 0; i < gGame.hintsCount; i++) {
@@ -77,19 +75,15 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 // Functions to choose a difficulty by player.
-function level1() {
-    gLevel = { DIFFICULTY: 'Beginner', SIZE: 4, MINES: 2 }
+function changeDifficulty(el) {
+    if (el.innerText === '👶') {
+        gLevel = { DIFFICULTY: 'Beginner', SIZE: 4, MINES: 2 }
+    } else if (el.innerText === '😎') {
+        gLevel = { DIFFICULTY: 'Expert', SIZE: 8, MINES: 14 }
+    } else if (el.innerText === '💀') {
+        gLevel = { DIFFICULTY: 'Killer', SIZE: 12, MINES: 32 }
+    }
     onInit()
-}
-function level2() {
-    gLevel = { DIFFICULTY: 'Expert', SIZE: 8, MINES: 14 }
-    onInit()
-
-}
-function level3() {
-    gLevel = { DIFFICULTY: 'Killer', SIZE: 12, MINES: 32 }
-    onInit()
-
 }
 
 //  Count mines around each cell and set the cell's minesAroundCount.
@@ -106,33 +100,96 @@ function minesAroundCount(cellI, cellJ, mat) {
     return NeighborMinesCount
 }
 
-// Get available Neighboring cells coordinations for later usage
-function NeighborEmptyCords(cellI, cellJ, mat) {
-    var NeighborEmptyCordsArray = []
-    var count = 0
-    for (var i = cellI - 1; i <= cellI + 1; i++) {
-        if (i < 0 || i >= mat.length) continue
-        for (var j = cellJ - 1; j <= cellJ + 1; j++, count++) {
-            if (i === cellI && j === cellJ) continue
-            if (j < 0 || j >= mat[i].length) continue
-            if (mat[i][j].isMine) continue
-            if (mat[i][j].isShown) continue
-            if (mat[i][j].isMarked) continue
-            else var cell = { row: i, coll: j }
-            NeighborEmptyCordsArray.push(cell)
+
+function changeDarkMode() {
+    const root = document.documentElement;
+    if (gDarkModeIsOff) {
+       
+        if (!root.dataset.bgMain) {
+            root.dataset.bgMain = getComputedStyle(root).getPropertyValue('--bg-main').trim();
+            root.dataset.bgBox = getComputedStyle(root).getPropertyValue('--bg-box').trim();
+            root.dataset.bgDark = getComputedStyle(root).getPropertyValue('--bg-dark').trim();
+            root.dataset.bgScore = getComputedStyle(root).getPropertyValue('--bg-score').trim();
+            root.dataset.borderColor = getComputedStyle(root).getPropertyValue('--border-color').trim();
+            root.dataset.bgSc = getComputedStyle(root).getPropertyValue('--bg-safe').trim();
         }
+
+        root.style.setProperty('--bg-main', 'rgb(29, 29, 29)');
+        root.style.setProperty('--bg-box', 'rgb(105, 105, 105)');
+        root.style.setProperty('--bg-score', 'rgb(71, 71, 71)');
+        root.style.setProperty('--bg-dark', 'rgb(71, 71, 71)');
+        root.style.setProperty('--border-color', 'rgb(148, 148, 148)');
+        root.style.setProperty('--bg-safe', ' #05afe2');
+    } else {
+        root.style.setProperty('--bg-main', root.dataset.bgMain);
+        root.style.setProperty('--bg-box', root.dataset.bgBox);
+        root.style.setProperty('--bg-dark', root.dataset.bgDark);
+        root.style.setProperty('--bg-score', root.dataset.bgScore);
+        root.style.setProperty('--border-color', root.dataset.borderColor);
+        root.style.setProperty('--bg-safe',root.dataset.bgSc);
+
     }
-    return NeighborEmptyCordsArray
+
+    // elDarkMode.style.backgroundColor = 'gray'
+    gDarkModeIsOff = !gDarkModeIsOff
 }
-// Find available sales to place mines in them.
-function EmptyAvailableCellCordsArray(board) {
-    var emptyCordsArray = []
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[0].length; j++) {
-            var CurCell = board[i][j]
-            var CurCellCords = { i: i, j: j }
-            if (!CurCell.isMine && !CurCell.isShown) { emptyCordsArray.push(CurCellCords) }
+
+function getCordsByClassName(elCell) {
+    if (!elCell) { return null }
+    var curElCell = elCell.split(/(\d+)/);
+    var CurCords = { i: curElCell[1], j: curElCell[3] }
+    return CurCords
+}
+function countShownCells() {
+    var count = 0
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[i].length; j++) {
+            if (gBoard[i][j].isShown) count++
         }
     }
-    return emptyCordsArray
+    gGame.shownCount = count
+}
+
+function createGGame() {
+    gGame = {
+        isOn: false,
+        shownCount: 0,
+        markedCount: 0,
+        difficulty: gLevel.DIFFICULTY,
+        livesCount: 3,
+        hintsCount: 10,
+        hintActive: false,
+    }
+    return gGame
+}
+
+function checkCellContent(cell) {
+    var elCellInnerText
+    switch (true) {
+        case cell.isMine:
+            elCellInnerText = MINE_IMG
+            console.log('mine created now!');
+
+            break;
+        case cell.minesAroundCount:
+            elCellInnerText = cell.minesAroundCount
+            break;
+        default:
+            elCellInnerText = EMPTY
+            break;
+    }
+    return elCellInnerText
+}
+
+function safeClick() {
+    var safeCellsArray = []
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[i].length; j++) {
+            const cell = gBoard[i][j]
+            if (!cell.isShown) safeCellsArray.push(cell)
+                else continue
+        }
+    }
+    safeCellsArray.splice((getRandomIntInclusive(0,safeCellsArray.length-1)),1)
+    console.log("🚀 ~ safeClick ~ safeCellsArray:", safeCellsArray)
 }

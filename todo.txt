@@ -1,5 +1,9 @@
 
-Keep the best score in local storage (per level) and show it on the page
+בעיה עם הרמז משום מה הפעם הראשונה לא מורידה אותו כלל.
+
+לוחץ גם כשנגמר משחק!
+
+כרגע גייםאובר לא נכנס לפעולה בעיה עם הניקוד...
 
 When a cell that has no mines in his neighbors is clicked – uncover the cell and also 
 expand to all his neighbors in a recursive way.

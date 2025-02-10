@@ -24,10 +24,6 @@
             <h6>0</h6>
         </div>
         <div class="clock-div">
-            <!-- <div class="best-score">
-                <h4>best score is!</h4>
-                <h5>00:00</h5>
-            </div> -->
             <div class="timer">
                 <h4>timer</h4>
                 <h5></h5>
@@ -35,28 +31,28 @@
         </div>
     </div>
 
-    <button onclick="onInit()" class="smiley"></button>
     <div class="lives"></div>
+    <button onclick="onInit()" class="smiley"></button>
     <div class="hint">
-        <!-- <button onclick="useHint(this)">💡</button>
-        <button onclick="useHint(this)">💡</button>
-        <button onclick="useHint(this)">💡</button> -->
     </div>
     <div class="game-over"></div>
     <div class="board-container"></div>
 
     <div onclick="hideNoticeDivs(this)" class="blocking-div">
-        <div  class="notice">
+        <div class="notice">
             <h5></h5>
-            <h2></h2>
             <h4></h4>
+            <h5></h5>
         </div>
     </div>
-
+    <div class="bonus-buttons">
+        <button onclick="changeDarkMode()" class="dark-mode footer">Dark Mode</button>
+        <button onclick="safeClick()" class="safe-click footer">Safe Click</button>
+    </div>
     <div class="Difficulty">
-        <button class="Difficulty level" onclick="level1()">👶</button>
-        <button class="Difficulty level" onclick="level2()">😎</button>
-        <button class="Difficulty level" onclick="level3()">💀</button>
+        <button class="Difficulty level" onclick="changeDifficulty(this)">👶</button>
+        <button class="Difficulty level" onclick="changeDifficulty(this)">😎</button>
+        <button class="Difficulty level" onclick="changeDifficulty(this)">💀</button>
     </div>
     <h2>Best Scores</h2>
     <div class="best-scores">
@@ -74,7 +70,7 @@
         </div>
     </div>
 
-    <div class="footer"> Dan Weibren AKA DanDan </div>
+    <div class="name footer"> Dan Weibren AKA DanDan </div>
 
     <script src="js/main.js"></script>
     <script src="js/util.js"></script>
