@@ -104,7 +104,7 @@ function minesAroundCount(cellI, cellJ, mat) {
 function changeDarkMode() {
     const root = document.documentElement;
     if (gDarkModeIsOff) {
-       
+
         if (!root.dataset.bgMain) {
             root.dataset.bgMain = getComputedStyle(root).getPropertyValue('--bg-main').trim();
             root.dataset.bgBox = getComputedStyle(root).getPropertyValue('--bg-box').trim();
@@ -126,7 +126,7 @@ function changeDarkMode() {
         root.style.setProperty('--bg-dark', root.dataset.bgDark);
         root.style.setProperty('--bg-score', root.dataset.bgScore);
         root.style.setProperty('--border-color', root.dataset.borderColor);
-        root.style.setProperty('--bg-safe',root.dataset.bgSc);
+        root.style.setProperty('--bg-safe', root.dataset.bgSc);
 
     }
 
@@ -157,8 +157,12 @@ function createGGame() {
         markedCount: 0,
         difficulty: gLevel.DIFFICULTY,
         livesCount: 3,
-        hintsCount: 10,
+        hintsCount: 3,
         hintActive: false,
+        safeClicks: 3,
+        safeMode: false,
+        history: [],
+
     }
     return gGame
 }
@@ -181,15 +185,3 @@ function checkCellContent(cell) {
     return elCellInnerText
 }
 
-function safeClick() {
-    var safeCellsArray = []
-    for (let i = 0; i < gBoard.length; i++) {
-        for (let j = 0; j < gBoard[i].length; j++) {
-            const cell = gBoard[i][j]
-            if (!cell.isShown) safeCellsArray.push(cell)
-                else continue
-        }
-    }
-    safeCellsArray.splice((getRandomIntInclusive(0,safeCellsArray.length-1)),1)
-    console.log("🚀 ~ safeClick ~ safeCellsArray:", safeCellsArray)
-}

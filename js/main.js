@@ -4,7 +4,7 @@
 const FLAG_IMG = `<img src="img/flag.jpg" alt="mine_img"/>`
 const MINE_IMG = `<img src="img/mine.jpg" alt="mine_img"/>`
 const EMPTY = ''
-const gBestScore = []
+const gBestScore = { last: Infinity, time: 0 }
 // global variables 
 var timerInterval
 var gBoard
@@ -12,7 +12,8 @@ var gLevel = { DIFFICULTY: 'Beginner', SIZE: 4, MINES: 2 }
 var gGame
 var gCurTimeCount
 var gActiveHint
-var gLastCell
+var gLastCellCords
+var gLastMovesArray
 var gDarkModeIsOff = true
 
 
@@ -39,6 +40,7 @@ function restartUi() {
     document.querySelector('.timer h5').innerText = '00:00'
     document.querySelector('.game-over').style.visibility = 'hidden'
     document.querySelector('.smiley').innerText = '😊'
+    // gLastMovesArray = []
 }
 
 //  Builds the board Set the mines Call setMinesNegsCount() Return the created board
@@ -141,20 +143,22 @@ function placeRandomMines(gBoard, HowManyMines) {
 }
 // Manage clicks on cells.
 function onCellClicked(elCell, i, j) {
+    gGame.safeMode = false
     var curCell = gBoard[i][j]
-    gLastCell = { Cell: curCell, elCell: elCell }
+    gLastCellCords = { i: i, j: j }
+    gLastMovesArray = []
     if (gGame.shownCount === 0 && !gGame.isOn) {
-        // עשיתי שהתא הוא גלוי בפעולה הראשונה בכדי שהמוקשים לא יונחו באותו התא
         curCell.isShown = true
         smileyChange(curCell)
         startTimer()
         placeRandomMines(gBoard, gLevel.MINES)
         setMinesNeighborCount(gBoard)
         gGame.isOn = true
+    } else if (gGame.shownCount > 0 && !gGame.isOn) {
+        return
     } else if (gGame.hintActive && gGame.isOn) {
         hintUncover(i, j)
         return
-
     } else if (curCell.isMine && gGame.isOn) {
         gGame.livesCount--
         elCell.classList.add('hide-before')
@@ -162,32 +166,37 @@ function onCellClicked(elCell, i, j) {
         hitMine(elCell, curCell)
         return
     } else if (curCell.minesAroundCount < 1) {
-        // gGame.shownCount++
-        curCell.isShown = true
         expandShown(gBoard, i, j)
-    } else if (!gGame.isOn || curCell.isMarked || curCell.isShown) {
-        return
-    }
-    curCell.isShown = true
+    } else if (!gGame.isOn || curCell.isMarked || curCell.isShown) return
+    gLastMovesArray.push(gLastCellCords)
+    const newBoard = structuredClone(gLastMovesArray)
+    gGame.history.push(newBoard)
+    if (!curCell.isShown) curCell.isShown = true
     elCell.classList.add('hide-before')
     countShownCells()
     updateGameScores()
     isGameOver()
 }
-//Counts neighboring Mines To place number inside cells to show player
-function setMinesNeighborCount(gBoard) {
-    for (let i = 0; i < gBoard.length; i++) {
-        for (let j = 0; j < gBoard[0].length; j++) {
-            var cell = gBoard[i][j]
-            var cellLocation = { i: i, j: j }
-            if (cell.isMine) continue;
-            else {
-                cell.minesAroundCount = minesAroundCount(i, j, gBoard)
-                renderCell(cellLocation, cell.minesAroundCount)
-            }
-        }
+
+function undo() {
+    if (!gGame.history.length) { return }
+    const lastMove = gGame.history.pop()
+    for (let i = 0; i < lastMove.length; i++) {
+        const cellCords = lastMove[i]
+        const I = cellCords.i
+        const J = cellCords.j
+        const cell = gBoard[I][J]
+        const elCell = document.querySelector(`.cell-${I}-${J}`)
+        cell.isShown = false
+        cell.isCheck = false
+        elCell.classList.remove('hide-before')
+        gGame.shownCount--
     }
+    countShownCells()
+    updateGameScores()
+    isGameOver()
 }
+
 // finds neighboring cells that are Not mine's, marked or shown
 function NeighborEmptyCords(cellI, cellJ, gBoard) {
     const curCell = gBoard[cellI][cellJ]
@@ -218,14 +227,15 @@ function expandShown(gBoard, i, j) {
     var curEmptyNeighbors = NeighborEmptyCords(i, j, gBoard)
     // Takes the relevant cells and shows them.
     for (let i = 0; i < curEmptyNeighbors.length; i++) {
-        var emptyCellsArray = []
         const row = curEmptyNeighbors[i].row
         const coll = curEmptyNeighbors[i].coll
         const cell = gBoard[row][coll]
+        const elCell = document.querySelector(`.cell-${row}-${coll}`)
         cell.isShown = true
-        const elCell = document.querySelector(`.cell-${row}-${coll}`).classList.add('hide-before')
+        elCell.classList.add('hide-before')
+        gLastCellCords = { i: row, j: coll }
+        gLastMovesArray.push(gLastCellCords)
     }
-
 }
 //implements losing situation
 function youLose() {
@@ -255,8 +265,10 @@ function victory() {
     elGameOver.innerText = 'Congratulations!!! \n you win!'
     elGameOver.style.background = 'linear-gradient(to top, #adff2f, #ffea00)';
     //Updates best score
-    checkBestScore()
     gGame.isOn = false
+    setTimeout(() => {
+        checkBestScore()
+    }, 500);
 }
 //Showcases best score on scoreboard.
 function showBestScore() {
@@ -270,20 +282,21 @@ function showBestScore() {
 }
 // Check for best score and updates it 
 function checkBestScore() {
-    const bestScoreInMilSecond = gBestScore.last
-    const bestScoreInTime = gBestScore.time
     const curScoreInMilSecond = gCurTimeCount.last
     const curScoreInTime = gCurTimeCount.time
-    if (localStorage.getItem(gLevel.DIFFICULTY) === null)
-        console.log('no score');
-    if (curScoreInMilSecond > bestScoreInMilSecond) {
-        console.log('new score');
-        localStorage.setItem(gLevel.DIFFICULTY, bestScoreInTime)
+    if (localStorage.getItem(gLevel.DIFFICULTY) === null) {
+        gBestScore.last = curScoreInMilSecond
+        gBestScore.time = curScoreInTime
+        localStorage.setItem(gLevel.DIFFICULTY, curScoreInTime)
         showBestScore()
-    } else
-        console.log('old score');
-    localStorage.setItem(gLevel.DIFFICULTY, curScoreInTime)
-    showBestScore()
+    } else if (curScoreInMilSecond < gBestScore.last) {
+        gBestScore.last = curScoreInMilSecond
+        gBestScore.time = curScoreInTime
+        localStorage.setItem(gLevel.DIFFICULTY, curScoreInTime)
+        showBestScore()
+    } else {
+        showBestScore()
+    }
 }
 //Checks if game over and sets victory or loss.
 function isGameOver() {
@@ -299,9 +312,12 @@ function hideNoticeDivs(el) {
     el.style.display = "none";
     if (!gGame.isOn) return
     else {
-        gLastCell.elCell.classList.remove('hide-before')
-        gLastCell.Cell.isShown = false
+        const cell = gBoard[gLastCellCords.i][gLastCellCords.j]
+        const elCell = document.querySelector(`.cell-${gLastCellCords.i}-${gLastCellCords.j}`)
         startTimer()
+        if (gGame.safeMode) return
+        else elCell.classList.remove('hide-before')
+        cell.isShown = false
     }
 }
 // Deals with all the situation after hitting a mine
@@ -313,29 +329,25 @@ function hitMine(elCell, curCell) {
     if (gGame.livesCount < 1) {
         document.querySelector('.notice h5').innerText = 'Too bad that was your last life ! \n Press me to continue \n 👇'
         document.querySelector('.notice h4').innerText = '😭'
-        document.querySelector('.notice h4').innerText = 'Hit the Skull emoji to restart the game!'
+        document.querySelector('.notice h6').innerText = 'Hit the Skull emoji to restart the game!'
         youLose()
     } else {
         document.querySelector('.notice h5').innerText = 'Holy moly, you\'v hit a mine! \n good thing you Still have some lives.'
         document.querySelector('.notice h4').innerText = '🤯'
-        document.querySelector('.notice h4').innerText = 'Hit me to continue  \n 👇'
+        document.querySelector('.notice h6').innerText = 'Hit me to continue  \n 👇'
     }
 }
 // Implify use hint when player presses button
 function useHint(elHint) {
-    // if (!gGame.isOn) {
-    //     return
-
-    // }
     // Make sure no option to press another hint while one is active
     if (gGame.hintActive && elHint !== gActiveHint) return
     //If player didn't show one cell, don't Implement hint. 
     if (gGame.shownCount === 0) {
         document.querySelector('.notice').style.display = 'block'
         document.querySelector('.blocking-div').style.display = 'block'
-        document.querySelector('.notice h2').innerText = '🤣'
         document.querySelector('.notice h5').innerText = 'You forgot to unveil a cell \n You have to unveil one cell before using a hint!'
-        document.querySelector('.notice h4').innerText = 'Click anywhere to continue!'
+        document.querySelector('.notice h4').innerText = '🤣'
+        document.querySelector('.notice h6').innerText = 'Click anywhere to continue!'
         return
     }
     if (gGame.hintActive && !gGame.isOn) return
@@ -416,5 +428,76 @@ function hintUncover(cellI, cellJ) {
         gGame.hintActive = false
         gGame.hintsCount--
     }, 1500)
+
+}
+function safeClick() {
+
+    if (gGame.safeClicks < 1) {
+        document.querySelector('.notice').style.display = 'block'
+        document.querySelector('.blocking-div').style.display = 'block'
+        document.querySelector('.notice h5').innerText = 'too bad you don\'t have another safeCell left \n try doing you\'r best to win on you\'r own!'
+        document.querySelector('.notice h4').innerText = '😅'
+        document.querySelector('.notice h6').innerText = 'Click anywhere to continue!'
+        return
+    }
+
+    var safeCellsArray = []
+    stopTimer()
+    gGame.safeMode = true
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[i].length; j++) {
+            const cell = gBoard[i][j]
+            const CellCords = { i: i, j: j }
+            if (cell.isShown || cell.isMine) continue
+            else safeCellsArray.push(CellCords)
+        }
+    }
+    gGame.safeClicks--
+    var curCellCords = safeCellsArray.splice((getRandomIntInclusive(0, safeCellsArray.length - 1)), 1)
+    markSafeCell(curCellCords)
+}
+function markSafeCell(CellCords) {
+    const root = document.documentElement;
+    const cellI = CellCords[0].i
+    const cellJ = CellCords[0].j
+    const elCell = document.querySelector(`.cell-${cellI}-${cellJ}`)
+
+    if (!root.dataset.bgBefore) {
+        root.dataset.bgBefore = getComputedStyle(root).getPropertyValue('--bg-before').trim();
+    }
+    elCell.style.setProperty('--bg-before', 'rgb(56, 240, 87)')
+    setTimeout(() => {
+        startTimer()
+        elCell.style.setProperty('--bg-before', root.dataset.bgBefore);
+    }, 1500);
+}
+// function showCell(cell, elCell) {
+
+//     cell.isShown = true
+//     elCell.classList.add('hide-before')
+//     var curCellCords = getCordsByClassName(elCell)
+
+//     gGame.history.push(newBoard)
+
+//     // const curCell = gBoard[i][j]
+//     // const curElCell = document.querySelector(`.cell.cell${i}${j}`)
+// }
+//Counts neighboring Mines To place number inside cells to show player
+
+function setMinesNeighborCount(gBoard) {
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[0].length; j++) {
+            var cell = gBoard[i][j]
+            var cellLocation = { i: i, j: j }
+            if (cell.isMine) continue;
+            else {
+                cell.minesAroundCount = minesAroundCount(i, j, gBoard)
+                renderCell(cellLocation, cell.minesAroundCount)
+            }
+        }
+    }
+}
+
+function manualMineSet() {
 
 }

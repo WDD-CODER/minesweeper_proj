@@ -9,6 +9,8 @@
     --bg-secondary: antiquewhite;
     --bg-dark: #272727;
     --bg-safe: #05596e;
+    --bg-undo: #f7a438;
+    --bg-before: linear-gradient(to top, #bfbfbf, gray);
     --bg-score: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132));
     --border-color: rgb(29, 29, 29);
     --border-light: #808080;
@@ -183,14 +185,14 @@ body {
 }
 
 .cell::before {
-    z-index: 1;
+    z-index: 3;
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, #bfbfbf, gray);
+    background: var(--bg-before);
     border: 1px solid var(--border-light);
     transition: opacity 0.3s;
 }
@@ -233,6 +235,7 @@ img {
     text-align: center;
     /* toggle to 'block' when showing the notice */
     position: fixed;
+    margin-top: 250px;
     top: 18%;
     left: 50%;
     height: 50vw;
@@ -248,11 +251,18 @@ img {
 }
 
 
-.notice h4,
-.notice h5 {
-    font-size: 3vw;  /* Scale with viewport width */
-    width: 100%;     /* Stretch to fill width */
-    flex-grow: 1;    /* Allow the text to take up available space */
+.notice h4 {
+    font-size: xx-large;
+}
+
+.notice h5,
+.notice h6 {
+    font-size: 3vw;
+    /* Scale with viewport width */
+    width: 100%;
+    /* Stretch to fill width */
+    flex-grow: 1;
+    /* Allow the text to take up available space */
     display: flex;
     justify-content: center;
     align-items: center
@@ -320,6 +330,13 @@ img {
     background-color: var(--bg-safe);
 
 }
+.undo{
+    cursor: pointer;
+    display: inline-block;
+    background-color: var(--bg-undo);
+
+}
+
 
 /* Footer */
 .footer {
