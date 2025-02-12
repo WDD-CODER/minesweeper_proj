@@ -179,7 +179,7 @@ function onCellClicked(elCell, i, j) {
 }
 
 function undo() {
-    if (!gGame.history.length) { return }
+    if (!gGame.history.length || !gGame.isOn) { return }
     const lastMove = gGame.history.pop()
     for (let i = 0; i < lastMove.length; i++) {
         const cellCords = lastMove[i]
@@ -433,7 +433,7 @@ function hintUncover(cellI, cellJ) {
 
 }
 function safeClick() {
-
+if (!gGame.isOn) return
     if (gGame.safeClicks < 1) {
         document.querySelector('.notice').style.display = 'block'
         document.querySelector('.blocking-div').style.display = 'block'
