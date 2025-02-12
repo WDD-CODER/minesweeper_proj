@@ -342,7 +342,7 @@ function useHint(elHint) {
     // Make sure no option to press another hint while one is active
     if (gGame.hintActive && elHint !== gActiveHint) return
     //If player didn't show one cell, don't Implement hint. 
-    if (gGame.shownCount === 0) {
+    else if (gGame.shownCount === 0) {
         document.querySelector('.notice').style.display = 'block'
         document.querySelector('.blocking-div').style.display = 'block'
         document.querySelector('.notice h5').innerText = 'You forgot to unveil a cell \n You have to unveil one cell before using a hint!'
@@ -350,8 +350,10 @@ function useHint(elHint) {
         document.querySelector('.notice h6').innerText = 'Click anywhere to continue!'
         return
     }
-    if (gGame.hintActive && !gGame.isOn) return
-    else if (gGame.hintActive) {
+    else if (!gGame.isOn) { return }
+
+
+    if (gGame.hintActive) {
         elHint.style.backgroundColor = 'transparent'
         gGame.hintActive = false
     } else {
@@ -422,11 +424,11 @@ function hintUncover(cellI, cellJ) {
     }
 
     setTimeout(function () {
-        startTimer()
-        renderHints()
         gGame.isOn = true
         gGame.hintActive = false
         gGame.hintsCount--
+        startTimer()
+        renderHints()
     }, 1500)
 
 }
