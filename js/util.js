@@ -161,8 +161,9 @@ function createGGame() {
         hintActive: false,
         safeClicks: 3,
         safeMode: false,
+        manualMode: false,
+        minesLeft: 0,
         history: [],
-
     }
     return gGame
 }

@@ -14,6 +14,10 @@
     <h1>Minesweeper game</h1>
 
     <div class="info-container">
+        <div class="mines-left counter">
+            <h5>MINES TO UNCOVER</h5>
+            <h6>0</h6>
+        </div>
         <div class="mark-count counter">
             <h5>MARK COUNT</h5>
             <h6>0</h6>
@@ -23,6 +27,7 @@
             <h5>SCORE COUNT</h5>
             <h6>0</h6>
         </div>
+        
         <div class="clock-div">
             <div class="timer">
                 <h4>timer</h4>
@@ -36,6 +41,12 @@
     <div class="hint">
     </div>
     <div class="game-over"></div>
+    <div class="manual-mine">
+        <button class="manual-mine footer" onclick="manualMineSet()">
+            <img class="symbol" src="img/mine.jpg" alt="Mine-image">
+            <div class="num-mine">6</div>
+        </button>
+    </div>
     <div class="board-container"></div>
 
     <div onclick="hideNoticeDivs(this)" class="blocking-div">

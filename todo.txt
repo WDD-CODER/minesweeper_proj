@@ -1,21 +1,7 @@
 
 
-לוחץ גם כשנגמר משחק!
 
-כרגע גייםאובר לא נכנס לפעולה בעיה עם הניקוד...
 
-בעיה עם הסייפ קליק הוא מחזיר את התא שהוסתר במקרה והיו יותר מ3 לחיצות. הוא אמור להשאיר אותו חשןף
-
-When a cell that has no mines in his neighbors is clicked – uncover the cell and also 
-expand to all his neighbors in a recursive way.
-
-The user has 3 Safe-Clicks:
-Clicking the Safe-Click button will mark a random covered safe cell (for 1.5 seconds) 
-so the user knows that he can safely click that cell.
-
-The user should be able to toggle between Dark-Mode and Light-Mode
-
-Add an “UNDO” button, so the user can undo (some of) his moves
 
 Manually positioned mines
 Create a “manually create” mode in which the user first positions

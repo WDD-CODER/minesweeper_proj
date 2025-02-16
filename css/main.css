@@ -9,6 +9,7 @@
     --bg-secondary: antiquewhite;
     --bg-dark: #272727;
     --bg-safe: #05596e;
+    --bg-manual: transparent;
     --bg-undo: #f7a438;
     --bg-before: linear-gradient(to top, #bfbfbf, gray);
     --bg-score: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132));
@@ -163,6 +164,30 @@ body {
     padding: var(--padding-small);
     border: var(--border-thick);
     border-radius: var(--border-radius-medium);
+}
+
+.manual-mine {
+    cursor: pointer;
+    display: block;
+    background-color: var(--bg-manual);
+    margin: var(--margin-small);
+}
+
+.num-mine {
+display: none;
+object-fit: cover;
+object-position: center;
+font-size: x-large;
+
+
+}
+
+.manual-mine .footer {
+    cursor: pointer;
+    display: block;
+    gap: var(--gap-medium);
+    padding: var(--padding-medium);
+    background-color: var(--bg-manual);
 }
 
 /* Board & Cells */
@@ -330,7 +355,8 @@ img {
     background-color: var(--bg-safe);
 
 }
-.undo{
+
+.undo {
     cursor: pointer;
     display: inline-block;
     background-color: var(--bg-undo);
