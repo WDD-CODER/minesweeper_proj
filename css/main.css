@@ -11,8 +11,10 @@
     --bg-safe: #05596e;
     --bg-manual: transparent;
     --bg-undo: #f7a438;
+    --bg-mg: aqua;
     --bg-before: linear-gradient(to top, #bfbfbf, gray);
     --bg-score: linear-gradient(to top, rgb(241, 241, 241), rgb(133, 132, 132));
+    --mh-color: black;
     --border-color: rgb(29, 29, 29);
     --border-light: #808080;
     --highlight-color: rgb(212, 212, 54);
@@ -37,7 +39,8 @@
     --gap-medium: 10px;
 
     /* Font */
-    --font-main: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    --font-main: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    --font-seconde: Impact;
     --font-size-small: small;
     --font-size-medium: large;
     --font-size-large: x-large;
@@ -49,6 +52,14 @@
 body {
     background-color: var(--bg-main);
     text-align: center;
+    font-family:var(--font-main);
+
+}
+
+body h1, .Best-h{
+color:var(--mh-color);
+font-family:var(--font-seconde);
+
 }
 
 /* Smiley, Lives, Hint */
@@ -95,6 +106,8 @@ body {
     justify-content: center;
     height: 100%;
     gap: var(--gap-medium);
+    font-family: var(--font-main);
+
 
 }
 
@@ -119,7 +132,6 @@ body {
 
 .timer h4,
 .timer h5 {
-    font-family: var(--font-main);
     margin: var(--padding-small);
 }
 
@@ -144,7 +156,6 @@ body {
 
 .counter h5,
 .counter h6 {
-    font-family: var(--font-main);
     margin-top: 0;
 }
 
@@ -166,6 +177,23 @@ body {
     border-radius: var(--border-radius-medium);
 }
 
+.mega-hint{
+padding: 1rem;  
+}
+
+.mega-hint button{
+/* display: none; */
+background-color:var(--bg-mg);
+cursor: pointer;
+}
+
+.mega-hint button:hover{
+    background-color: rgb(247, 8, 0);
+}
+
+.exterminator{
+
+}
 .manual-mine {
     cursor: pointer;
     display: block;
@@ -344,7 +372,9 @@ img {
     display: inline-block;
     background-color: var(--bg-dark);
 }
-
+.dark-mode:hover{
+    background-color: rgb(168, 168, 168);
+}
 .bonus-buttons {
     display: block;
 }
@@ -353,8 +383,12 @@ img {
     cursor: pointer;
     display: inline-block;
     background-color: var(--bg-safe);
-
 }
+
+.safe-click:hover{
+    background-color: rgb(70, 229, 250);
+}
+
 
 .undo {
     cursor: pointer;
@@ -401,4 +435,8 @@ img {
 .score-container p {
     font-size: 16px;
     font-weight: bold;
+}
+
+.Best-h{
+    color: var(--mh-color);
 }

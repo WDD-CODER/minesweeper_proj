@@ -112,6 +112,9 @@ function changeDarkMode() {
             root.dataset.bgScore = getComputedStyle(root).getPropertyValue('--bg-score').trim();
             root.dataset.borderColor = getComputedStyle(root).getPropertyValue('--border-color').trim();
             root.dataset.bgSc = getComputedStyle(root).getPropertyValue('--bg-safe').trim();
+            root.dataset.bgUndo = getComputedStyle(root).getPropertyValue('--bg-undo').trim();
+            root.dataset.bgMegaHint = getComputedStyle(root).getPropertyValue('--bg-mg').trim();
+            root.dataset.mainHederColor = getComputedStyle(root).getPropertyValue('--mh-color').trim();
         }
 
         root.style.setProperty('--bg-main', 'rgb(29, 29, 29)');
@@ -120,6 +123,9 @@ function changeDarkMode() {
         root.style.setProperty('--bg-dark', 'rgb(71, 71, 71)');
         root.style.setProperty('--border-color', 'rgb(148, 148, 148)');
         root.style.setProperty('--bg-safe', ' #05afe2');
+        root.style.setProperty('--bg-undo','rgb(209, 195, 2)');
+        root.style.setProperty('--bg-mg','rgb(2, 124, 238)');
+        root.style.setProperty('--mh-color','rgb(114, 240, 10)');
     } else {
         root.style.setProperty('--bg-main', root.dataset.bgMain);
         root.style.setProperty('--bg-box', root.dataset.bgBox);
@@ -127,10 +133,12 @@ function changeDarkMode() {
         root.style.setProperty('--bg-score', root.dataset.bgScore);
         root.style.setProperty('--border-color', root.dataset.borderColor);
         root.style.setProperty('--bg-safe', root.dataset.bgSc);
+        root.style.setProperty('--bg-undo', root.dataset.bgUndo);
+        root.style.setProperty('--bg-mg', root.dataset.bgMegaHint);
+        root.style.setProperty('--mh-color', root.dataset.mainHederColor);
 
     }
 
-    // elDarkMode.style.backgroundColor = 'gray'
     gDarkModeIsOff = !gDarkModeIsOff
 }
 
@@ -163,6 +171,7 @@ function createGGame() {
         safeMode: false,
         manualMode: false,
         minesLeft: 0,
+        megaHintIsOn: false,
         history: [],
     }
     return gGame
@@ -173,14 +182,15 @@ function checkCellContent(cell) {
     switch (true) {
         case cell.isMine:
             elCellInnerText = MINE_IMG
-            console.log('mine created now!');
-
             break;
         case cell.minesAroundCount:
             elCellInnerText = cell.minesAroundCount
             break;
-        default:
+        case !cell.minesAroundCount || !cell.isMine:
             elCellInnerText = EMPTY
+            break;
+        default:
+           return null
             break;
     }
     return elCellInnerText
